@@ -1,0 +1,1 @@
+Patches preserved from Alpine aports commit 9d63bf4e11abd32e2affeb295e5244314955b463, main/llvm21. Original attribution is retained. Larger worker thread stacks support musl; the dynamic-library tests account for musl dlclose semantics.

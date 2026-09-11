@@ -1,0 +1,20 @@
+{
+  "project": "llvm",
+  "version": "21.1.2",
+  "upstream": "https://github.com/llvm/llvm-project",
+  "upstream_tag": "llvmorg-21.1.2",
+  "upstream_commit": "b708aea0bc7127adf4ec643660699c8bcdde1273",
+  "libraries": [
+    "libLLVM.so.21.1"
+  ],
+  "smoke_commands": [
+    [
+      "llvm-config",
+      "--version"
+    ],
+    [
+      "llc",
+      "--version"
+    ]
+  ]
+}
