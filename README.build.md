@@ -18,7 +18,7 @@ git checkout --detach musl-v21.1.2-1
 test "$(git rev-parse HEAD)" = bf34d4037a24448468ce46ee56c8a0c0bee802e3
 ```
 
-Native build prerequisites: C++ compiler, CMake, Ninja and Python. Provision at least the musl CI budget (12 GiB RAM, two compile jobs) and substantial free disk space. The native development recipe limits targets to X86/AArch64; the musl release script builds all targets and selects specific LLVM tools/tests.
+Native build prerequisites: C++ compiler, CMake, Ninja and Python. Provision at least the musl CI budget (12 GiB RAM, two compile jobs) and substantial free disk space. The native recipe uses `LLVM_BUILD_LLVM_DYLIB=ON` with `BUILD_SHARED_LIBS=OFF`: LLVM rejects `LLVM_LINK_LLVM_DYLIB=ON` together with shared component libraries. The native development recipe limits targets to X86/AArch64; the musl release script builds all targets and selects specific LLVM tools/tests.
 
 ## Linux glibc
 
@@ -31,7 +31,7 @@ portable/manylinux wheel.
 cmake -S llvm -B build-glibc -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCMAKE_INSTALL_PREFIX="$PWD/prefix-glibc" -DCMAKE_INSTALL_LIBDIR=lib \
-  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_SHARED_LIBS=OFF \
   -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_TARGETS_TO_BUILD="X86;AArch64" -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_EH=ON -DLLVM_BUILD_TESTS=ON -DLLVM_INCLUDE_BENCHMARKS=OFF
 cmake --build build-glibc --parallel 2
 cmake --build build-glibc --target ADTTests SupportTests --parallel 2
@@ -91,7 +91,7 @@ release recipe or a universal/x86_64 qualification.
 cmake -S llvm -B build-macos -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCMAKE_INSTALL_PREFIX="$PWD/prefix-macos" -DCMAKE_INSTALL_LIBDIR=lib \
-  -DBUILD_SHARED_LIBS=ON -DCMAKE_OSX_ARCHITECTURES=arm64 \
+  -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=arm64 \
   -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_TARGETS_TO_BUILD="X86;AArch64" -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_EH=ON -DLLVM_BUILD_TESTS=ON -DLLVM_INCLUDE_BENCHMARKS=OFF
 cmake --build build-macos --parallel 2
 cmake --build build-macos --target ADTTests SupportTests --parallel 2
